@@ -1,0 +1,4312 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodePath - Programming Languages</title>
+
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2369ffad'/%3E%3Ctext x='50' y='69' text-anchor='middle' font-family='Arial' font-size='60' font-weight='900' fill='%2306110b'%3EC%3C/text%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #07090d;
+            --panel: #0d1118;
+            --panel-2: #111722;
+            --line: rgba(255, 255, 255, .08);
+            --text: #f4f7fb;
+            --muted: #8792a3;
+            --accent: #75ffb0;
+            --accent-2: #37d87e;
+            --shadow: 0 20px 50px rgba(0, 0, 0, .32);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", system-ui, sans-serif;
+            background:
+                radial-gradient(circle at 80% 10%, rgba(117, 255, 176, .055), transparent 25%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            overflow-x: hidden;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* Header */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            height: 74px;
+            padding: 0 6vw;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid var(--line);
+            background: rgba(7, 9, 13, .72);
+            backdrop-filter: blur(18px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+            background: var(--accent);
+            color: #031309;
+
+            box-shadow: 0 0 28px rgba(117, 255, 176, .18);
+        }
+
+        .brand span span {
+            color: var(--accent);
+        }
+
+        .nav {
+            display: flex;
+            gap: 28px;
+
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .nav a {
+            transition: .2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--text);
+        }
+
+        .header-btn {
+            padding: 10px 15px;
+
+            border: 1px solid var(--line);
+            border-radius: 9px;
+
+            background: rgba(255, 255, 255, .025);
+            color: var(--text);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            transition: .2s;
+        }
+
+        .header-btn:hover {
+            color: var(--accent);
+            border-color: rgba(117, 255, 176, .35);
+        }
+
+        /* Hero */
+
+        .hero {
+            position: relative;
+            min-height: 650px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 90px 10vw 80px;
+
+            isolation: isolate;
+            overflow: hidden;
+        }
+
+        /* Giữ grid hero cũ */
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            opacity: .18;
+
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+
+            background-size: 65px 65px;
+
+            mask-image:
+                linear-gradient(to right, transparent, black 45%, black 70%, transparent);
+
+            pointer-events: none;
+        }
+
+        .hero-orb {
+            position: absolute;
+            z-index: -1;
+
+            border-radius: 50%;
+            filter: blur(3px);
+        }
+
+        .orb-one {
+            width: 420px;
+            height: 420px;
+            right: 6vw;
+            top: 80px;
+
+            background:
+                radial-gradient(circle, rgba(117, 255, 176, .18), transparent 68%);
+        }
+
+        .orb-two {
+            width: 300px;
+            height: 300px;
+            right: 20vw;
+            bottom: -100px;
+
+            background:
+                radial-gradient(circle, rgba(78, 118, 255, .12), transparent 70%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .18em;
+        }
+
+        .eyebrow::before {
+            content: "";
+
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+
+            margin-right: 8px;
+
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .hero h1 {
+            margin: 18px 0 20px;
+
+            font-size: clamp(46px, 6.5vw, 82px);
+            line-height: .98;
+            letter-spacing: -.06em;
+        }
+
+        .hero h1 em {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .hero-description {
+            max-width: 620px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Search */
+
+        .hero-search {
+            max-width: 680px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-top: 32px;
+            padding: 7px 8px 7px 16px;
+
+            border: 1px solid var(--line);
+            border-radius: 14px;
+
+            background: rgba(15, 20, 28, .88);
+            box-shadow: var(--shadow);
+        }
+
+        .search-icon {
+            color: var(--muted);
+            font-size: 22px;
+        }
+
+        .hero-search input {
+            flex: 1;
+            min-width: 0;
+
+            padding: 0 3px;
+
+            border: 0;
+            outline: 0;
+
+            background: transparent;
+            color: var(--text);
+
+            font-size: 14px;
+        }
+
+        .hero-search input::placeholder {
+            color: #667181;
+        }
+
+        .search-btn {
+            padding: 12px 18px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background: var(--accent);
+            color: #06100a;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            transition: .2s;
+        }
+
+        .search-btn:hover {
+            background: #8affc2;
+            transform: translateY(-1px);
+        }
+
+        /* Actions */
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-top: 16px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 12px 17px;
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            transition: .2s;
+        }
+
+        .primary-btn {
+            border: 0;
+            background: var(--accent);
+            color: #06100a;
+        }
+
+        .primary-btn:hover {
+            background: #8affc2;
+            transform: translateY(-1px);
+        }
+
+        .secondary-btn {
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, .025);
+            color: var(--text);
+        }
+
+        .secondary-btn:hover {
+            color: var(--accent);
+            border-color: rgba(117, 255, 176, .35);
+        }
+
+        /* Quick filters */
+
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            margin-top: 14px;
+        }
+
+        .quick-tags button {
+            padding: 7px 12px;
+
+            border: 1px solid var(--line);
+            border-radius: 999px;
+
+            background: transparent;
+            color: var(--muted);
+
+            font-size: 12px;
+
+            transition: .2s;
+        }
+
+        .quick-tags button:hover,
+        .quick-tags button.active {
+            border-color: rgba(117, 255, 176, .35);
+            background: rgba(117, 255, 176, .04);
+            color: var(--accent);
+        }
+
+        /* Terminal */
+
+        .hero-card {
+            position: absolute;
+            right: 8vw;
+            bottom: 12%;
+
+            width: 330px;
+            padding: 18px;
+
+            border: 1px solid var(--line);
+            border-radius: 18px;
+
+            background: rgba(11, 15, 21, .75);
+            backdrop-filter: blur(15px);
+
+            box-shadow: var(--shadow);
+
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        .terminal-top {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .terminal-top span {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+            background: #4b5563;
+        }
+
+        .terminal-line {
+            color: #cbd5e1;
+        }
+
+        .terminal-line.muted {
+            color: #667085;
+        }
+
+        .terminal-line.accent {
+            color: var(--accent);
+        }
+
+        /* Stats */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+
+            margin: 0 6vw;
+
+            overflow: hidden;
+
+            border: 1px solid var(--line);
+            border-radius: 18px;
+
+            background: var(--panel);
+        }
+
+        .stat {
+            padding: 24px 30px;
+            border-right: 1px solid var(--line);
+        }
+
+        .stat:last-child {
+            border-right: 0;
+        }
+
+        .stat strong {
+            display: block;
+
+            font-size: 28px;
+            letter-spacing: -.04em;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Sections */
+
+        .section {
+            padding: 100px 6vw 0;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+
+            margin-bottom: 28px;
+        }
+
+        .section h2 {
+            margin-top: 7px;
+
+            font-size: 40px;
+            line-height: 1;
+            letter-spacing: -.045em;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .controls select,
+        .compare-selects select {
+            padding: 11px 13px;
+
+            border: 1px solid var(--line);
+            border-radius: 10px;
+
+            outline: 0;
+
+            background: var(--panel);
+            color: var(--text);
+
+            font-size: 12px;
+        }
+
+        /* Language cards */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .game-card {
+            overflow: hidden;
+
+            border: 1px solid var(--line);
+            border-radius: 15px;
+
+            background: var(--panel);
+
+            cursor: pointer;
+            transition: .22s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+
+            border-color: rgba(117, 255, 176, .25);
+
+            box-shadow: 0 18px 35px rgba(0, 0, 0, .22);
+        }
+
+        .card-art {
+            position: relative;
+
+            height: 170px;
+
+            display: grid;
+            place-items: center;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(circle at 50% 40%,
+                    rgba(117, 255, 176, .16),
+                    transparent 45%),
+                linear-gradient(140deg, #111827, #090d13 65%);
+        }
+
+        .card-art::before {
+            content: "";
+
+            position: absolute;
+
+            width: 130px;
+            height: 130px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(circle,
+                    rgba(117, 255, 176, .13),
+                    transparent 68%);
+
+            filter: blur(6px);
+        }
+
+        .code-logo {
+            position: relative;
+            z-index: 2;
+
+            min-width: 90px;
+            min-height: 90px;
+
+            display: grid;
+            place-items: center;
+
+            padding: 14px;
+
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 20px;
+
+            background: rgba(255, 255, 255, .035);
+            color: var(--text);
+
+            font-family: monospace;
+            font-size: 30px;
+            font-weight: 900;
+
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+        }
+
+        .code-logo.small {
+            font-size: 25px;
+        }
+
+        .card-body {
+            padding: 17px;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .badge {
+            display: inline-flex;
+
+            padding: 5px 8px;
+            border-radius: 999px;
+
+            background: rgba(117, 255, 176, .08);
+            color: var(--accent);
+
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .08em;
+        }
+
+        .badge.level {
+            background: rgba(255, 255, 255, .045);
+            color: #bac4d2;
+        }
+
+        .game-card h3 {
+            margin: 12px 0 5px;
+            font-size: 17px;
+        }
+
+        .game-card p {
+            min-height: 42px;
+
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 17px;
+
+            color: #697386;
+            font-size: 11px;
+        }
+
+        .view-more {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .empty {
+            display: none;
+
+            padding: 35px 0;
+
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* Featured */
+
+        .featured {
+            padding-top: 80px;
+        }
+
+        .feature-panel {
+            min-height: 360px;
+
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+
+            overflow: hidden;
+
+            border: 1px solid var(--line);
+            border-radius: 22px;
+
+            background: linear-gradient(135deg, #10161f, #0a0f16);
+        }
+
+        .feature-copy {
+            align-self: center;
+            padding: 55px;
+        }
+
+        .feature-copy p {
+            max-width: 570px;
+
+            margin: 18px 0 28px;
+
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .feature-art {
+            position: relative;
+
+            display: grid;
+            place-items: center;
+
+            overflow: hidden;
+        }
+
+        .feature-art::before {
+            content: "";
+
+            position: absolute;
+
+            width: 340px;
+            height: 340px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(circle,
+                    rgba(117, 255, 176, .19),
+                    transparent 64%);
+        }
+
+        .feature-code {
+            position: relative;
+            z-index: 2;
+
+            width: 280px;
+            padding: 20px;
+
+            border: 1px solid var(--line);
+            border-radius: 15px;
+
+            background: rgba(10, 14, 20, .68);
+            box-shadow: var(--shadow);
+
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        .feature-code .green {
+            color: var(--accent);
+        }
+
+        .feature-code .muted {
+            color: #657082;
+        }
+
+        /* Learning path */
+
+        .path-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .path-card {
+            padding: 22px;
+
+            border: 1px solid var(--line);
+            border-radius: 16px;
+
+            background: var(--panel);
+
+            transition: .2s;
+        }
+
+        .path-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(117, 255, 176, .25);
+        }
+
+        .path-card h3 {
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+
+        .path-card p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .path-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+
+            margin-top: 18px;
+        }
+
+        .path-step {
+            padding: 7px 9px;
+
+            border: 1px solid var(--line);
+            border-radius: 8px;
+
+            background: rgba(255, 255, 255, .025);
+            color: #d7dee8;
+
+            font-size: 11px;
+        }
+
+        .path-arrow {
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        /* Projects */
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .project-card {
+            padding: 20px;
+
+            border: 1px solid var(--line);
+            border-radius: 15px;
+
+            background: var(--panel);
+
+            cursor: pointer;
+            transition: .22s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+
+            border-color: rgba(117, 255, 176, .3);
+
+            box-shadow: 0 18px 35px rgba(0, 0, 0, .2);
+        }
+
+        .project-level {
+            display: inline-flex;
+
+            padding: 5px 8px;
+            margin-bottom: 12px;
+
+            border-radius: 999px;
+
+            background: rgba(117, 255, 176, .08);
+            color: var(--accent);
+
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .project-card h3 {
+            font-size: 17px;
+        }
+
+        .project-card p {
+            min-height: 40px;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 18px;
+
+            color: #697386;
+            font-size: 11px;
+        }
+
+        /* Resources */
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .resource-card {
+            padding: 20px;
+
+            border: 1px solid var(--line);
+            border-radius: 15px;
+
+            background: var(--panel);
+
+            transition: .2s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(117, 255, 176, .25);
+        }
+
+        .resource-icon {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            margin-bottom: 15px;
+
+            border-radius: 11px;
+
+            background: rgba(117, 255, 176, .08);
+            color: var(--accent);
+
+            font-family: monospace;
+            font-weight: 900;
+        }
+
+        .resource-card h3 {
+            font-size: 16px;
+        }
+
+        .resource-card p {
+            min-height: 54px;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .resource-link {
+            display: inline-block;
+
+            margin-top: 14px;
+
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Progress */
+
+        .progress-panel {
+            display: grid;
+            grid-template-columns: .8fr 1.2fr;
+            gap: 20px;
+
+            padding: 25px;
+
+            border: 1px solid var(--line);
+            border-radius: 20px;
+
+            background: var(--panel);
+        }
+
+        .progress-info h3 {
+            font-size: 24px;
+        }
+
+        .progress-info p {
+            margin-top: 10px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 7px;
+
+            margin-top: 18px;
+
+            overflow: hidden;
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .progress-fill {
+            width: 0;
+            height: 100%;
+
+            border-radius: inherit;
+            background: var(--accent);
+
+            transition: .3s;
+        }
+
+        .checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 11px;
+
+            border: 1px solid var(--line);
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, .02);
+            color: #cbd5e1;
+
+            font-size: 12px;
+
+            transition: .2s;
+        }
+
+        .check-item input {
+            accent-color: var(--accent);
+        }
+
+        .check-item.done {
+            border-color: rgba(117, 255, 176, .2);
+            color: var(--accent);
+        }
+
+        /* About */
+
+        .about {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 25px;
+
+            padding-bottom: 100px;
+        }
+
+        .about-card,
+        .about-list {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+
+            background: var(--panel);
+        }
+
+        .about-card {
+            padding: 40px;
+        }
+
+        .about-card p {
+            max-width: 650px;
+
+            margin-top: 22px;
+
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .about-list {
+            padding: 10px;
+        }
+
+        .about-list div {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 4px 10px;
+
+            padding: 22px;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .about-list div:last-child {
+            border-bottom: 0;
+        }
+
+        .about-list span {
+            grid-row: span 2;
+
+            color: var(--accent);
+            font-size: 11px;
+        }
+
+        .about-list b {
+            font-size: 14px;
+        }
+
+        .about-list small {
+            color: var(--muted);
+        }
+
+        /* Modals */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(0, 0, 0, .75);
+            backdrop-filter: blur(12px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box,
+        .project-modal-box,
+        .recommend-box,
+        .compare-box,
+        .admin-box {
+            position: relative;
+
+            width: min(950px, 100%);
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            border: 1px solid var(--line);
+            border-radius: 22px;
+
+            background: linear-gradient(145deg, #111720, #090d13);
+            box-shadow: var(--shadow);
+        }
+
+        .close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            z-index: 5;
+
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--line);
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, .04);
+            color: var(--text);
+
+            font-size: 18px;
+
+            transition: .2s;
+        }
+
+        .close:hover {
+            color: var(--accent);
+        }
+
+        /* Language modal */
+
+        .modal-hero {
+            min-height: 250px;
+
+            display: grid;
+            place-items: center;
+
+            border-bottom: 1px solid var(--line);
+
+            background:
+                radial-gradient(circle,
+                    rgba(117, 255, 176, .17),
+                    transparent 48%),
+                #0b1017;
+        }
+
+        .modal-code-logo {
+            min-width: 150px;
+            min-height: 150px;
+
+            display: grid;
+            place-items: center;
+
+            padding: 25px;
+
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 30px;
+
+            background: rgba(255, 255, 255, .035);
+
+            box-shadow: 0 25px 70px rgba(0, 0, 0, .3);
+
+            font-family: monospace;
+            font-size: 45px;
+            font-weight: 900;
+        }
+
+        .modal-content {
+            padding: 28px;
+        }
+
+        .modal-content h2 {
+            margin-top: 8px;
+
+            font-size: 36px;
+            letter-spacing: -.05em;
+        }
+
+        .modal-description {
+            max-width: 760px;
+
+            margin-top: 15px;
+
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+
+            margin-top: 25px;
+        }
+
+        .detail-box {
+            padding: 18px;
+
+            border: 1px solid var(--line);
+            border-radius: 14px;
+
+            background: rgba(255, 255, 255, .025);
+        }
+
+        .detail-box h4 {
+            margin-bottom: 12px;
+
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .detail-list div::before {
+            content: "✓";
+            margin-right: 7px;
+            color: var(--accent);
+        }
+
+        .difficulty {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .difficulty i {
+            width: 28px;
+            height: 6px;
+
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .difficulty i.active {
+            background: var(--accent);
+
+            box-shadow:
+                0 0 10px rgba(117, 255, 176, .14);
+        }
+
+        .roadmap {
+            margin-top: 25px;
+        }
+
+        .roadmap h3 {
+            margin-bottom: 13px;
+            font-size: 18px;
+        }
+
+        .roadmap-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .roadmap-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 13px;
+
+            border: 1px solid var(--line);
+            border-radius: 12px;
+
+            background: rgba(255, 255, 255, .02);
+        }
+
+        .roadmap-number {
+            width: 30px;
+            height: 30px;
+
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 9px;
+
+            background: rgba(117, 255, 176, .08);
+            color: var(--accent);
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .roadmap-step span {
+            color: #c3ccd8;
+            font-size: 12px;
+        }
+
+        /* Project modal */
+
+        .project-modal-box {
+            width: min(720px, 100%);
+            padding: 30px;
+        }
+
+        .project-modal-box h2 {
+            margin-top: 8px;
+
+            font-size: 34px;
+            letter-spacing: -.04em;
+        }
+
+        .project-description {
+            margin-top: 12px;
+
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .project-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+
+            margin-top: 22px;
+        }
+
+        .project-steps {
+            margin-top: 25px;
+        }
+
+        .project-steps h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .project-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+
+            padding: 13px;
+            margin-top: 8px;
+
+            border: 1px solid var(--line);
+            border-radius: 11px;
+
+            background: rgba(255, 255, 255, .02);
+        }
+
+        .project-step-number {
+            width: 28px;
+            height: 28px;
+
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+
+            background: rgba(117, 255, 176, .08);
+            color: var(--accent);
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .project-step-content strong {
+            display: block;
+
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .project-step-content span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .project-example {
+            margin-top: 25px;
+        }
+
+        .project-example-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .project-example h3 {
+            font-size: 18px;
+        }
+
+        .copy-code-btn {
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .025);
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .copy-code-btn:hover {
+            color: var(--accent);
+            border-color: rgba(117, 255, 176, .35);
+        }
+
+        .project-code {
+            max-height: 300px;
+            overflow: auto;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #080b10;
+            color: #cbd5e1;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px;
+            line-height: 1.7;
+            white-space: pre;
+        }
+
+        .project-guide {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .02);
+        }
+
+        .project-guide small {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .project-guide a {
+            flex-shrink: 0;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* Recommendation */
+
+        .recommend-box {
+            width: min(650px, 100%);
+            padding: 30px;
+        }
+
+        .recommend-box h2,
+        .compare-box h2 {
+            margin-top: 8px;
+
+            font-size: 34px;
+            letter-spacing: -.04em;
+        }
+
+        .recommend-description {
+            margin-top: 10px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .question {
+            margin-top: 25px;
+        }
+
+        .question h4 {
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+        }
+
+        .choice {
+            padding: 12px;
+
+            border: 1px solid var(--line);
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, .025);
+            color: var(--muted);
+
+            font-size: 12px;
+
+            transition: .2s;
+        }
+
+        .choice:hover,
+        .choice.selected {
+            border-color: rgba(117, 255, 176, .35);
+            background: rgba(117, 255, 176, .05);
+            color: var(--accent);
+        }
+
+        .recommend-submit {
+            margin-top: 25px;
+        }
+
+        .recommend-result {
+            display: none;
+
+            margin-top: 20px;
+            padding: 18px;
+
+            border: 1px solid var(--line);
+            border-radius: 14px;
+
+            background: rgba(255, 255, 255, .025);
+        }
+
+        .recommend-result.show {
+            display: block;
+        }
+
+        .result-main {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .result-main span {
+            color: var(--accent);
+        }
+
+        .result-reason {
+            margin-top: 8px;
+
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .result-projects {
+            margin-top: 13px;
+
+            color: #c3ccd8;
+            font-size: 12px;
+        }
+
+        /* Compare */
+
+        .compare-box {
+            width: min(900px, 100%);
+            padding: 30px;
+        }
+
+        .compare-selects {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+
+            margin-top: 25px;
+        }
+
+        .compare-result {
+            margin-top: 25px;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 14px;
+
+            border-bottom: 1px solid var(--line);
+
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .compare-table th {
+            color: var(--accent);
+        }
+
+        .compare-table td {
+            color: var(--muted);
+        }
+
+        /* Admin */
+
+        .admin-box {
+            width: min(430px, 100%);
+            padding: 28px;
+        }
+
+        .admin-box h3 {
+            margin-top: 8px;
+            font-size: 25px;
+        }
+
+        .admin-box p {
+            margin-top: 10px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .email-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+
+            margin-top: 20px;
+            padding: 12px;
+
+            border: 1px solid var(--line);
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, .025);
+        }
+
+        .email-box span {
+            overflow: hidden;
+
+            color: #d8e0ea;
+            font-size: 12px;
+
+            text-overflow: ellipsis;
+        }
+
+        .copy-btn {
+            padding: 8px 10px;
+
+            border: 0;
+            border-radius: 8px;
+
+            background: var(--accent);
+            color: #06110b;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* Footer */
+
+        footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            padding: 25px 6vw;
+
+            border-top: 1px solid var(--line);
+
+            color: #667085;
+            font-size: 11px;
+        }
+
+        footer a {
+            color: var(--text);
+
+            font-weight: 800;
+
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        /* Favorites */
+
+        .favorite-btn {
+            width: 32px;
+            height: 32px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--line);
+            border-radius: 9px;
+
+            background: rgba(7, 9, 13, .72);
+            color: #6f7b8c;
+
+            font-size: 16px;
+            line-height: 1;
+
+            transition: .2s;
+        }
+
+        .favorite-btn:hover {
+            color: var(--accent);
+            border-color: rgba(117, 255, 176, .35);
+            transform: scale(1.05);
+        }
+
+        .favorite-btn.active {
+            color: var(--accent);
+            background: rgba(117, 255, 176, .08);
+            border-color: rgba(117, 255, 176, .35);
+        }
+
+        .project-card,
+        .path-card {
+            position: relative;
+        }
+
+        .card-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .path-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            margin-top: 13px;
+            color: #748095;
+            font-size: 11px;
+        }
+
+        .saved-section {
+            padding-top: 80px;
+        }
+
+        .saved-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+
+            margin-bottom: 24px;
+        }
+
+        .saved-count {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .saved-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .saved-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            padding: 16px;
+
+            border: 1px solid var(--line);
+            border-radius: 13px;
+
+            background: var(--panel);
+        }
+
+        .saved-item strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .saved-item small {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .saved-actions {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+        }
+
+        .saved-link {
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .025);
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .saved-empty {
+            padding: 28px;
+
+            border: 1px dashed var(--line);
+            border-radius: 14px;
+
+            color: var(--muted);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 1000;
+            max-width: min(360px, calc(100vw - 44px));
+            padding: 12px 15px;
+            border: 1px solid rgba(117, 255, 176, .25);
+            border-radius: 11px;
+            background: rgba(12, 17, 23, .94);
+            color: #eefcf4;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, .25);
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card,
+        .path-card,
+        .project-card,
+        .resource-card,
+        .primary-btn,
+        .secondary-btn,
+        .header-btn,
+        .tag,
+        .choice {
+            transition: transform .2s ease, border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+
+        .card,
+        .path-card,
+        .project-card,
+        .resource-card {
+            animation: cardIn .38s ease both;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(9px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal.show {
+            animation: fadeIn .18s ease both;
+        }
+
+        .modal.show>* {
+            animation: slideUp .22s ease both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(.99);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .hero-card {
+                right: -80px;
+                opacity: .35;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .resource-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .path-grid,
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat:nth-child(2) {
+                border-right: 0;
+            }
+
+            .stat:nth-child(-n + 2) {
+                border-bottom: 1px solid var(--line);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .topbar {
+                padding: 0 5vw;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .hero {
+                min-height: 680px;
+                padding: 75px 5vw;
+            }
+
+            .hero-card {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 50px;
+            }
+
+            .hero-search {
+                flex-wrap: wrap;
+            }
+
+            .hero-search input {
+                width: 100%;
+                flex-basis: 70%;
+            }
+
+            .hero-search button {
+                flex: 1;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-actions button {
+                width: 100%;
+            }
+
+            .stats {
+                margin: 0 5vw;
+            }
+
+            .section {
+                padding-left: 5vw;
+                padding-right: 5vw;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .controls {
+                width: 100%;
+            }
+
+            .controls select,
+            .controls .secondary-btn {
+                flex: 1;
+            }
+
+            .cards,
+            .resource-grid,
+            .path-grid,
+            .project-grid,
+            .detail-grid,
+            .project-detail-grid,
+            .roadmap-list,
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-panel,
+            .about,
+            .progress-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-art {
+                min-height: 250px;
+            }
+
+            .feature-copy {
+                padding: 35px;
+            }
+
+            .checklist {
+                grid-template-columns: 1fr;
+            }
+
+            .compare-selects {
+                grid-template-columns: 1fr;
+            }
+
+            .compare-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .modal {
+                padding: 12px;
+            }
+
+            footer {
+                padding: 25px 5vw;
+
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Header -->
+
+    <header class="topbar">
+        <a href="#home" class="brand">
+            <div class="brand-mark">C</div>
+            Code<span>Path</span>
+        </a>
+
+        <nav class="nav">
+            <a href="#home" class="active">Trang chủ</a>
+            <a href="#languages">Ngôn ngữ</a>
+            <a href="#learning">Lộ trình</a>
+            <a href="#projects">Projects</a>
+            <a href="#favorites">Đã lưu</a>
+            <a href="#resources">Resources</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="header-btn" onclick="openAdmin()">About Admin</button>
+        </div>
+    </header>
+
+    <!-- Hero -->
+
+    <section class="hero" id="home">
+        <div class="hero-grid"></div>
+        <div class="hero-orb orb-one"></div>
+        <div class="hero-orb orb-two"></div>
+
+        <div class="hero-content">
+            <div class="eyebrow">PROGRAMMING • LANGUAGES • ROADMAP</div>
+
+            <h1>
+                Khám phá thế giới
+                <br>
+                <em>lập trình.</em>
+            </h1>
+
+            <p class="hero-description">
+                Tìm hiểu các ngôn ngữ lập trình,
+                xem chúng phù hợp với ai, dùng để làm gì
+                và bắt đầu học từ đâu.
+            </p>
+
+            <div class="hero-search">
+                <span class="search-icon">⌕</span>
+                <input id="searchInput" type="text" placeholder="Tìm Python, HTML, C++, JavaScript...">
+                <button class="search-btn" onclick="renderLanguages()">Tìm kiếm</button>
+            </div>
+
+            <div class="hero-actions">
+                <button class="primary-btn" onclick="openRecommendation()">Tìm ngôn ngữ phù hợp →</button>
+                <button class="secondary-btn" onclick="openCompare()">So sánh ngôn ngữ</button>
+            </div>
+
+            <div class="quick-tags">
+                <button data-filter="Beginner">Người mới</button>
+                <button data-filter="Intermediate">Trung cấp</button>
+                <button data-filter="Advanced">Nâng cao</button>
+            </div>
+        </div>
+
+        <div class="hero-card">
+            <div class="terminal-top">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="terminal-line muted">$ codepath --learn</div>
+            <div class="terminal-line">&gt; loading languages...</div>
+            <div class="terminal-line accent">&gt; roadmap loaded</div>
+            <div class="terminal-line muted">&gt; ready.</div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+
+    <section class="stats">
+        <div class="stat">
+            <strong>13</strong>
+            <span>Ngôn ngữ & công nghệ</span>
+        </div>
+
+        <div class="stat">
+            <strong>6</strong>
+            <span>Lĩnh vực</span>
+        </div>
+
+        <div class="stat">
+            <strong>3</strong>
+            <span>Cấp độ</span>
+        </div>
+
+        <div class="stat">
+            <strong>30+</strong>
+            <span>Project ideas</span>
+        </div>
+    </section>
+
+    <!-- Languages -->
+
+    <section class="section" id="languages">
+        <div class="section-heading">
+            <div>
+                <div class="eyebrow">PROGRAMMING LIBRARY</div>
+                <h2>Ngôn ngữ lập trình</h2>
+            </div>
+
+            <div class="controls">
+                <select id="categorySelect">
+                    <option value="all">Tất cả lĩnh vực</option>
+                    <option value="Web">Web</option>
+                    <option value="AI / Data">AI / Data</option>
+                    <option value="Game">Game</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Backend">Backend</option>
+                    <option value="Systems">Systems</option>
+                </select>
+
+                <select id="levelSelect">
+                    <option value="all">Tất cả cấp độ</option>
+                    <option value="Beginner">Người mới</option>
+                    <option value="Intermediate">Trung cấp</option>
+                    <option value="Advanced">Nâng cao</option>
+                </select>
+
+                <button class="secondary-btn" onclick="openCompare()">Compare</button>
+            </div>
+        </div>
+
+        <div class="cards" id="cards"></div>
+
+        <div class="empty" id="emptyState">
+            Không tìm thấy ngôn ngữ phù hợp.
+        </div>
+    </section>
+
+    <!-- Featured -->
+
+    <section class="section featured">
+        <div class="feature-panel">
+            <div class="feature-copy">
+                <div class="eyebrow">START HERE</div>
+
+                <h2>Không biết bắt đầu từ đâu?</h2>
+
+                <p>
+                    Nếu muốn làm web, bắt đầu với HTML + CSS rồi tới JavaScript.
+                    Nếu thích AI, Data hoặc automation, Python là lựa chọn dễ tiếp cận.
+                </p>
+
+                <button class="primary-btn" onclick="openRecommendation()">
+                    Tìm hướng phù hợp →
+                </button>
+            </div>
+
+            <div class="feature-art">
+                <div class="feature-code">
+                    <div class="muted">// beginner roadmap</div>
+                    <div><span class="green">const</span> start = <span class="green">"HTML"</span>;</div>
+                    <div>learn(<span class="green">"CSS"</span>);</div>
+                    <div>learn(<span class="green">"JavaScript"</span>);</div>
+                    <div>build(<span class="green">"project"</span>);</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Path -->
+
+    <section class="section" id="learning">
+        <div class="section-heading">
+            <div>
+                <div class="eyebrow">LEARNING PATH</div>
+                <h2>Chọn hướng học</h2>
+            </div>
+        </div>
+
+        <div class="path-grid">
+            <div class="path-card" data-path-id="web">
+                <div class="card-top-row">
+                    <h3>Web Development</h3>
+                    <button class="favorite-btn" data-favorite-type="path" data-favorite-id="web"
+                        aria-label="Lưu Web Development">♡</button>
+                </div>
+                <p>Xây dựng website và web application.</p>
+                <div class="path-flow">
+                    <span class="path-step">HTML</span><span class="path-arrow">→</span>
+                    <span class="path-step">CSS</span><span class="path-arrow">→</span>
+                    <span class="path-step">JavaScript</span><span class="path-arrow">→</span>
+                    <span class="path-step">Git</span>
+                </div>
+                <div class="path-time">◷ Khoảng 3 tháng</div>
+            </div>
+
+            <div class="path-card" data-path-id="ai">
+                <div class="card-top-row">
+                    <h3>AI / Data</h3>
+                    <button class="favorite-btn" data-favorite-type="path" data-favorite-id="ai"
+                        aria-label="Lưu AI / Data">♡</button>
+                </div>
+                <p>Học dữ liệu, automation và machine learning.</p>
+                <div class="path-flow">
+                    <span class="path-step">Python</span><span class="path-arrow">→</span>
+                    <span class="path-step">NumPy</span><span class="path-arrow">→</span>
+                    <span class="path-step">Pandas</span><span class="path-arrow">→</span>
+                    <span class="path-step">ML</span>
+                </div>
+                <div class="path-time">◷ Khoảng 6 tháng</div>
+            </div>
+
+            <div class="path-card" data-path-id="game">
+                <div class="card-top-row">
+                    <h3>Game Development</h3>
+                    <button class="favorite-btn" data-favorite-type="path" data-favorite-id="game"
+                        aria-label="Lưu Game Development">♡</button>
+                </div>
+                <p>Làm game với engine và ngôn ngữ phù hợp.</p>
+                <div class="path-flow">
+                    <span class="path-step">C#</span><span class="path-arrow">→</span>
+                    <span class="path-step">Unity</span><span class="path-arrow">→</span>
+                    <span class="path-step">Game</span>
+                </div>
+                <div class="path-time">◷ Khoảng 4–6 tháng</div>
+            </div>
+
+            <div class="path-card" data-path-id="backend">
+                <div class="card-top-row">
+                    <h3>Backend</h3>
+                    <button class="favorite-btn" data-favorite-type="path" data-favorite-id="backend"
+                        aria-label="Lưu Backend">♡</button>
+                </div>
+                <p>Xây dựng API, server và dịch vụ phía sau.</p>
+                <div class="path-flow">
+                    <span class="path-step">JavaScript</span><span class="path-arrow">→</span>
+                    <span class="path-step">Node.js</span><span class="path-arrow">→</span>
+                    <span class="path-step">API</span>
+                </div>
+                <div class="path-time">◷ Khoảng 3–4 tháng</div>
+            </div>
+
+            <div class="path-card" data-path-id="android">
+                <div class="card-top-row">
+                    <h3>Android</h3>
+                    <button class="favorite-btn" data-favorite-type="path" data-favorite-id="android"
+                        aria-label="Lưu Android">♡</button>
+                </div>
+                <p>Phát triển ứng dụng Android.</p>
+                <div class="path-flow">
+                    <span class="path-step">Kotlin</span><span class="path-arrow">→</span>
+                    <span class="path-step">Android Studio</span><span class="path-arrow">→</span>
+                    <span class="path-step">App</span>
+                </div>
+                <div class="path-time">◷ Khoảng 4 tháng</div>
+            </div>
+
+            <div class="path-card" data-path-id="systems">
+                <div class="card-top-row">
+                    <h3>Systems</h3>
+                    <button class="favorite-btn" data-favorite-type="path" data-favorite-id="systems"
+                        aria-label="Lưu Systems">♡</button>
+                </div>
+                <p>Hiểu sâu về bộ nhớ, hệ thống và hiệu năng.</p>
+                <div class="path-flow">
+                    <span class="path-step">C</span><span class="path-arrow">→</span>
+                    <span class="path-step">C++</span><span class="path-arrow">→</span>
+                    <span class="path-step">Rust</span>
+                </div>
+                <div class="path-time">◷ Khoảng 6–9 tháng</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+
+    <section class="section" id="projects">
+        <div class="section-heading">
+            <div>
+                <div class="eyebrow">PROJECT IDEAS</div>
+                <h2>Học bằng cách làm</h2>
+            </div>
+        </div>
+
+        <div class="project-grid">
+            <div class="project-card" data-project-id="calculator" onclick="openProject('calculator')">
+                <button class="favorite-btn" data-favorite-type="project" data-favorite-id="calculator"
+                    aria-label="Lưu Calculator">♡</button>
+                <span class="project-level">BEGINNER</span>
+                <h3>Calculator</h3>
+                <p>Luyện biến, điều kiện và function.</p>
+
+                <div class="project-info">
+                    <span>Python / JavaScript</span>
+                    <span>Dễ</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-project-id="todo" onclick="openProject('todo')">
+                <button class="favorite-btn" data-favorite-type="project" data-favorite-id="todo"
+                    aria-label="Lưu To-do App">♡</button>
+                <span class="project-level">BEGINNER</span>
+                <h3>To-do App</h3>
+                <p>Luyện DOM, array và lưu dữ liệu.</p>
+
+                <div class="project-info">
+                    <span>JavaScript</span>
+                    <span>Dễ</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-project-id="weather" onclick="openProject('weather')">
+                <button class="favorite-btn" data-favorite-type="project" data-favorite-id="weather"
+                    aria-label="Lưu Weather App">♡</button>
+                <span class="project-level">INTERMEDIATE</span>
+                <h3>Weather App</h3>
+                <p>Làm việc với API và dữ liệu JSON.</p>
+
+                <div class="project-info">
+                    <span>JavaScript</span>
+                    <span>Trung bình</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-project-id="api" onclick="openProject('api')">
+                <button class="favorite-btn" data-favorite-type="project" data-favorite-id="api"
+                    aria-label="Lưu REST API">♡</button>
+                <span class="project-level">INTERMEDIATE</span>
+                <h3>REST API</h3>
+                <p>Tạo backend và xử lý request.</p>
+
+                <div class="project-info">
+                    <span>Go / Java / JS</span>
+                    <span>Trung bình</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-project-id="engine" onclick="openProject('engine')">
+                <button class="favorite-btn" data-favorite-type="project" data-favorite-id="engine"
+                    aria-label="Lưu Mini Game Engine">♡</button>
+                <span class="project-level">ADVANCED</span>
+                <h3>Mini Game Engine</h3>
+                <p>Tìm hiểu render, input và cấu trúc engine.</p>
+
+                <div class="project-info">
+                    <span>C++</span>
+                    <span>Khó</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-project-id="cli" onclick="openProject('cli')">
+                <button class="favorite-btn" data-favorite-type="project" data-favorite-id="cli"
+                    aria-label="Lưu CLI Tool">♡</button>
+                <span class="project-level">ADVANCED</span>
+                <h3>CLI Tool</h3>
+                <p>Xây dựng command-line application.</p>
+
+                <div class="project-info">
+                    <span>Rust / Go</span>
+                    <span>Khó</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section saved-section" id="favorites">
+        <div class="saved-header">
+            <div>
+                <div class="eyebrow">BOOKMARKS</div>
+                <h2>Đã lưu</h2>
+            </div>
+            <span class="saved-count" id="savedCount">0 mục đã lưu</span>
+        </div>
+
+        <div id="savedItems"></div>
+    </section>
+
+    <!-- Resources -->
+
+    <section class="section" id="resources">
+        <div class="section-heading">
+            <div>
+                <div class="eyebrow">RESOURCES</div>
+                <h2>Công cụ nên biết</h2>
+            </div>
+        </div>
+
+        <div class="resource-grid">
+            <div class="resource-card">
+                <div class="resource-icon">VS</div>
+                <h3>Visual Studio Code</h3>
+                <p>Code editor nhẹ và hỗ trợ nhiều ngôn ngữ.</p>
+
+                <a class="resource-link" href="https://code.visualstudio.com/" target="_blank"
+                    rel="noopener noreferrer">
+                    Trang chính thức →
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="resource-icon">GH</div>
+                <h3>GitHub</h3>
+                <p>Lưu trữ code và quản lý project với Git.</p>
+
+                <a class="resource-link" href="https://github.com/" target="_blank" rel="noopener noreferrer">
+                    Trang chính thức →
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="resource-icon">MDN</div>
+                <h3>MDN Web Docs</h3>
+                <p>Tài liệu tham khảo cho HTML, CSS và JavaScript.</p>
+
+                <a class="resource-link" href="https://developer.mozilla.org/" target="_blank"
+                    rel="noopener noreferrer">
+                    Trang chính thức →
+                </a>
+            </div>
+
+            <div class="resource-card">
+                <div class="resource-icon">PY</div>
+                <h3>Python Docs</h3>
+                <p>Tài liệu chính thức của Python.</p>
+
+                <a class="resource-link" href="https://docs.python.org/3/" target="_blank" rel="noopener noreferrer">
+                    Trang chính thức →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress -->
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <div class="eyebrow">YOUR PROGRESS</div>
+                <h2>Lộ trình cơ bản</h2>
+            </div>
+        </div>
+
+        <div class="progress-panel">
+            <div class="progress-info">
+                <h3 id="progressText">0% hoàn thành</h3>
+
+                <p>
+                    Tick những kiến thức mày đã học.
+                    Tiến độ được lưu trên trình duyệt.
+                </p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="checklist">
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Biến và kiểu dữ liệu
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Điều kiện
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Vòng lặp
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Function
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Array / List
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Object / Dictionary
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    OOP
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" data-progress>
+                    Git / GitHub
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+
+    <section class="section about" id="about">
+        <div class="about-card">
+            <div class="eyebrow">ABOUT CODEPATH</div>
+
+            <h2>
+                Chọn ngôn ngữ.
+                <br>
+                Chọn đúng hướng.
+            </h2>
+
+            <p>
+                CodePath giúp người mới tìm hiểu ngôn ngữ,
+                lựa chọn hướng học và bắt đầu bằng những project
+                thực tế thay vì chỉ đọc lý thuyết.
+            </p>
+        </div>
+
+        <div class="about-list">
+            <div>
+                <span>01</span>
+                <b>Cấp độ rõ ràng</b>
+                <small>Beginner, Intermediate và Advanced.</small>
+            </div>
+
+            <div>
+                <span>02</span>
+                <b>Learning Path</b>
+                <small>Biết mình nên học gì tiếp theo.</small>
+            </div>
+
+            <div>
+                <span>03</span>
+                <b>Project thực tế</b>
+                <small>Học bằng cách tự xây dựng sản phẩm.</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+
+    <footer>
+        <span>© 2026 CodePath.</span>
+
+        <span>
+            Designed by
+            <a href="https://github.com/nazhuldev" target="_blank" rel="noopener noreferrer">Kyu Dev</a>.
+        </span>
+    </footer>
+
+    <!-- Language modal -->
+
+    <div class="modal" id="languageModal">
+        <div class="modal-box">
+            <div class="modal-hero">
+                <button class="close" onclick="closeLanguage()">×</button>
+
+                <div class="modal-code-logo" id="modalLogo">PY</div>
+            </div>
+
+            <div class="modal-content">
+                <div class="eyebrow" id="modalCategory">AI / Data</div>
+                <h2 id="modalTitle">Python</h2>
+
+                <p class="modal-description" id="modalDescription"></p>
+
+                <div class="detail-grid">
+                    <div class="detail-box">
+                        <h4>Phù hợp với</h4>
+                        <div class="detail-list" id="modalAudience"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <h4>Dùng để làm gì?</h4>
+                        <div class="detail-list" id="modalUses"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <h4>Độ khó</h4>
+                        <div class="difficulty" id="modalDifficulty"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <h4>Cấp độ</h4>
+                        <div class="detail-list" id="modalLevel"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <h4>Project gợi ý</h4>
+                        <div class="detail-list" id="modalProjects"></div>
+                    </div>
+
+                    <div class="detail-box">
+                        <h4>Công cụ nên dùng</h4>
+                        <div class="detail-list" id="modalTools"></div>
+                    </div>
+                </div>
+
+                <div class="roadmap">
+                    <h3>Lộ trình gợi ý</h3>
+                    <div class="roadmap-list" id="modalRoadmap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project modal -->
+
+    <div class="modal" id="projectModal">
+        <div class="project-modal-box">
+            <button class="close" onclick="closeProject()">×</button>
+
+            <div class="eyebrow" id="projectLevel">BEGINNER</div>
+            <h2 id="projectTitle">Calculator</h2>
+
+            <p class="project-description" id="projectDescription"></p>
+            <div class="path-time" id="projectTime">◷ Thời gian dự kiến</div>
+
+            <div class="project-detail-grid">
+                <div class="detail-box">
+                    <h4>Ngôn ngữ</h4>
+                    <div class="detail-list" id="projectLanguages"></div>
+                </div>
+
+                <div class="detail-box">
+                    <h4>Kiến thức cần biết</h4>
+                    <div class="detail-list" id="projectKnowledge"></div>
+                </div>
+            </div>
+
+            <div class="project-steps">
+                <h3>Cách làm</h3>
+                <div id="projectSteps"></div>
+            </div>
+
+            <div class="project-example">
+                <div class="project-example-head">
+                    <h3>Code mẫu</h3>
+                    <button class="copy-code-btn" onclick="copyProjectCode()">Copy code</button>
+                </div>
+
+                <pre class="project-code" id="projectCode"></pre>
+
+                <div class="project-guide">
+                    <div>
+                        <strong>Hướng dẫn tham khảo</strong>
+                        <small id="projectGuideText">Tài liệu mẫu cho project này.</small>
+                    </div>
+                    <a id="projectGuide" href="#" target="_blank" rel="noopener noreferrer">Mở hướng dẫn →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendation modal -->
+
+    <div class="modal" id="recommendModal">
+        <div class="recommend-box">
+            <button class="close" onclick="closeRecommendation()">×</button>
+
+            <div class="eyebrow">RECOMMENDATION</div>
+            <h2>Chọn hướng học</h2>
+
+            <p class="recommend-description">
+                Trả lời hai câu hỏi để CodePath gợi ý ngôn ngữ phù hợp.
+            </p>
+
+            <div class="question">
+                <h4>Bạn đang ở mức nào?</h4>
+
+                <div class="choice-grid">
+                    <button class="choice" data-question="level" data-value="Beginner">
+                        Chưa từng code
+                    </button>
+
+                    <button class="choice" data-question="level" data-value="Intermediate">
+                        Biết cơ bản
+                    </button>
+
+                    <button class="choice" data-question="level" data-value="Advanced">
+                        Đã có kinh nghiệm
+                    </button>
+                </div>
+            </div>
+
+            <div class="question">
+                <h4>Bạn muốn làm gì?</h4>
+
+                <div class="choice-grid">
+                    <button class="choice" data-question="goal" data-value="Web">Website</button>
+                    <button class="choice" data-question="goal" data-value="AI">AI / Data</button>
+                    <button class="choice" data-question="goal" data-value="Game">Game</button>
+                    <button class="choice" data-question="goal" data-value="Mobile">Mobile</button>
+                    <button class="choice" data-question="goal" data-value="Backend">Backend</button>
+                    <button class="choice" data-question="goal" data-value="Systems">Systems</button>
+                </div>
+            </div>
+
+            <button class="primary-btn recommend-submit" onclick="getRecommendation()">
+                Tìm ngôn ngữ
+            </button>
+
+            <div class="recommend-result" id="recommendResult"></div>
+        </div>
+    </div>
+
+    <!-- Compare modal -->
+
+    <div class="modal" id="compareModal">
+        <div class="compare-box">
+            <button class="close" onclick="closeCompare()">×</button>
+
+            <div class="eyebrow">COMPARE</div>
+            <h2>So sánh ngôn ngữ</h2>
+
+            <div class="compare-selects">
+                <select id="compareOne"></select>
+                <select id="compareTwo"></select>
+
+                <button class="primary-btn" onclick="compareLanguages()">
+                    So sánh
+                </button>
+            </div>
+
+            <div class="compare-result" id="compareResult"></div>
+        </div>
+    </div>
+
+    <!-- Admin modal -->
+
+    <div class="modal" id="adminModal">
+        <div class="admin-box">
+            <button class="close" onclick="closeAdmin()">×</button>
+
+            <div class="eyebrow">ABOUT ADMIN</div>
+            <h3>Liên hệ Admin</h3>
+
+            <p>Email liên hệ của quản trị viên CodePath.</p>
+
+            <div class="email-box">
+                <span id="adminEmail">kyulon123@gmail.com</span>
+                <button class="copy-btn" onclick="copyEmail()">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const languages = [
+            {
+                name: "HTML",
+                short: "HTML",
+                category: "Web",
+                level: "Beginner",
+                description: "HTML là ngôn ngữ đánh dấu dùng để xây dựng cấu trúc của website.",
+                audience: [
+                    "Người mới học web",
+                    "Frontend Developer",
+                    "Người muốn làm website"
+                ],
+                uses: [
+                    "Website",
+                    "Web App",
+                    "Landing Page",
+                    "Email HTML"
+                ],
+                difficulty: 1,
+                projects: [
+                    "Portfolio",
+                    "Landing Page",
+                    "Personal Website",
+                    "Blog Layout"
+                ],
+                tools: [
+                    "VS Code",
+                    "Chrome",
+                    "Live Server"
+                ],
+                roadmap: [
+                    "HTML cơ bản",
+                    "Semantic HTML",
+                    "Links và Images",
+                    "Forms",
+                    "Tables",
+                    "Accessibility",
+                    "Project"
+                ]
+            },
+
+            {
+                name: "CSS",
+                short: "CSS",
+                category: "Web",
+                level: "Beginner",
+                description: "CSS dùng để định kiểu, bố cục và tạo giao diện cho website.",
+                audience: [
+                    "Người học web",
+                    "Frontend Developer",
+                    "UI Developer"
+                ],
+                uses: [
+                    "Website Styling",
+                    "Responsive Design",
+                    "Animation",
+                    "UI Design"
+                ],
+                difficulty: 3,
+                projects: [
+                    "Responsive Landing Page",
+                    "Portfolio",
+                    "Dashboard UI",
+                    "Animated Website"
+                ],
+                tools: [
+                    "VS Code",
+                    "Chrome DevTools",
+                    "Figma"
+                ],
+                roadmap: [
+                    "Selector",
+                    "Box Model",
+                    "Flexbox",
+                    "Grid",
+                    "Responsive",
+                    "Animation",
+                    "Project"
+                ]
+            },
+
+            {
+                name: "Python",
+                short: "PY",
+                category: "AI / Data",
+                level: "Beginner",
+                description: "Python là ngôn ngữ dễ tiếp cận, phù hợp cho người mới và được dùng trong automation, backend, data và AI.",
+                audience: [
+                    "Người chưa từng lập trình",
+                    "Người học AI / Machine Learning",
+                    "Người muốn làm automation",
+                    "Người học Data"
+                ],
+                uses: [
+                    "AI / Machine Learning",
+                    "Data Science",
+                    "Backend",
+                    "Automation"
+                ],
+                difficulty: 2,
+                projects: [
+                    "Calculator",
+                    "Number Guessing",
+                    "To-do List",
+                    "Weather App"
+                ],
+                tools: [
+                    "VS Code",
+                    "PyCharm",
+                    "Jupyter Notebook",
+                    "Python"
+                ],
+                roadmap: [
+                    "Biến và kiểu dữ liệu",
+                    "Điều kiện if / else",
+                    "Vòng lặp",
+                    "Function",
+                    "List và Dictionary",
+                    "OOP",
+                    "Project thực tế"
+                ]
+            },
+
+            {
+                name: "JavaScript",
+                short: "JS",
+                category: "Web",
+                level: "Beginner",
+                description: "JavaScript là công nghệ cốt lõi của web hiện đại và được dùng để tạo website tương tác.",
+                audience: [
+                    "Người muốn làm website",
+                    "Frontend Developer",
+                    "Full-stack Developer",
+                    "Người đã biết HTML / CSS"
+                ],
+                uses: [
+                    "Frontend",
+                    "Backend",
+                    "Web App",
+                    "Full-stack"
+                ],
+                difficulty: 4,
+                projects: [
+                    "To-do App",
+                    "Weather App",
+                    "Quiz App",
+                    "Portfolio"
+                ],
+                tools: [
+                    "VS Code",
+                    "Chrome DevTools",
+                    "Node.js",
+                    "Git"
+                ],
+                roadmap: [
+                    "Syntax cơ bản",
+                    "Array và Object",
+                    "DOM",
+                    "Event",
+                    "Async / Await",
+                    "API",
+                    "Framework"
+                ]
+            },
+
+            {
+                name: "TypeScript",
+                short: "TS",
+                category: "Web",
+                level: "Intermediate",
+                description: "TypeScript mở rộng JavaScript bằng hệ thống kiểu dữ liệu và giúp dự án lớn dễ quản lý hơn.",
+                audience: [
+                    "JavaScript Developer",
+                    "Frontend Developer",
+                    "Full-stack Developer",
+                    "Người làm dự án lớn"
+                ],
+                uses: [
+                    "Frontend",
+                    "Backend",
+                    "Web App",
+                    "Large-scale Projects"
+                ],
+                difficulty: 5,
+                projects: [
+                    "Dashboard",
+                    "REST API",
+                    "Task Manager",
+                    "Web App"
+                ],
+                tools: [
+                    "VS Code",
+                    "Node.js",
+                    "npm",
+                    "Git"
+                ],
+                roadmap: [
+                    "JavaScript nền tảng",
+                    "Type",
+                    "Interface",
+                    "Generic",
+                    "Union / Intersection",
+                    "Advanced TypeScript",
+                    "Project"
+                ]
+            },
+
+            {
+                name: "Java",
+                short: "JAVA",
+                category: "Backend",
+                level: "Intermediate",
+                description: "Java phổ biến trong backend, enterprise software và nhiều hệ thống lớn.",
+                audience: [
+                    "Sinh viên CNTT",
+                    "Backend Developer",
+                    "Người học OOP",
+                    "Người muốn làm enterprise software"
+                ],
+                uses: [
+                    "Backend",
+                    "Enterprise",
+                    "API",
+                    "Application Development"
+                ],
+                difficulty: 6,
+                projects: [
+                    "Banking App",
+                    "REST API",
+                    "Inventory System",
+                    "Chat Application"
+                ],
+                tools: [
+                    "IntelliJ IDEA",
+                    "VS Code",
+                    "JDK",
+                    "Maven"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "OOP",
+                    "Collection",
+                    "Exception",
+                    "Generic",
+                    "Spring",
+                    "Backend Project"
+                ]
+            },
+
+            {
+                name: "C#",
+                short: "C#",
+                category: "Game",
+                level: "Intermediate",
+                description: "C# phổ biến trong hệ sinh thái .NET và là lựa chọn chính khi làm game với Unity.",
+                audience: [
+                    "Game Developer",
+                    "Unity Developer",
+                    "Backend Developer",
+                    "Người học .NET"
+                ],
+                uses: [
+                    "Unity",
+                    "Game Development",
+                    "Backend",
+                    "Desktop Apps"
+                ],
+                difficulty: 6,
+                projects: [
+                    "2D Platformer",
+                    "Unity Game",
+                    "Desktop App",
+                    "REST API"
+                ],
+                tools: [
+                    "Visual Studio",
+                    "VS Code",
+                    "Unity",
+                    ".NET SDK"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "OOP",
+                    "LINQ",
+                    "Collections",
+                    "Async",
+                    ".NET",
+                    "Unity / Project"
+                ]
+            },
+
+            {
+                name: "C++",
+                short: "C++",
+                category: "Systems",
+                level: "Advanced",
+                description: "C++ mạnh về hiệu năng và thường được dùng trong game engine, software hiệu năng cao và systems programming.",
+                audience: [
+                    "Game Developer",
+                    "Systems Programmer",
+                    "Người muốn học low-level",
+                    "Người cần hiệu năng cao"
+                ],
+                uses: [
+                    "Game Engine",
+                    "Unreal Engine",
+                    "Systems",
+                    "High Performance"
+                ],
+                difficulty: 8,
+                projects: [
+                    "Console Game",
+                    "Game Engine Demo",
+                    "File System Tool",
+                    "Performance Project"
+                ],
+                tools: [
+                    "VS Code",
+                    "Visual Studio",
+                    "CMake",
+                    "Compiler"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "Pointer",
+                    "Reference",
+                    "OOP",
+                    "STL",
+                    "Memory",
+                    "Advanced C++"
+                ]
+            },
+
+            {
+                name: "C",
+                short: "C",
+                category: "Systems",
+                level: "Advanced",
+                description: "C là ngôn ngữ nền tảng để hiểu bộ nhớ, con trỏ và cách phần mềm tương tác với hệ thống.",
+                audience: [
+                    "Systems Programmer",
+                    "Embedded Developer",
+                    "Người học computer science",
+                    "Người muốn hiểu low-level"
+                ],
+                uses: [
+                    "Operating Systems",
+                    "Embedded",
+                    "Low-level",
+                    "Performance"
+                ],
+                difficulty: 8,
+                projects: [
+                    "Command Line Tool",
+                    "File Manager",
+                    "Embedded Project",
+                    "Mini Shell"
+                ],
+                tools: [
+                    "VS Code",
+                    "GCC",
+                    "Clang",
+                    "CMake"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "Pointer",
+                    "Array",
+                    "Struct",
+                    "Memory",
+                    "File I/O",
+                    "Systems Project"
+                ]
+            },
+
+            {
+                name: "Go",
+                short: "GO",
+                category: "Backend",
+                level: "Intermediate",
+                description: "Go có cú pháp tương đối đơn giản và hiệu năng tốt, phù hợp cho backend, server và networking.",
+                audience: [
+                    "Backend Developer",
+                    "Cloud Developer",
+                    "Server Developer",
+                    "Người thích code đơn giản"
+                ],
+                uses: [
+                    "Backend",
+                    "Cloud",
+                    "API",
+                    "Networking"
+                ],
+                difficulty: 5,
+                projects: [
+                    "REST API",
+                    "URL Shortener",
+                    "Chat Server",
+                    "CLI Tool"
+                ],
+                tools: [
+                    "VS Code",
+                    "Go Toolchain",
+                    "Docker",
+                    "Git"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "Struct",
+                    "Interface",
+                    "Goroutine",
+                    "Channel",
+                    "HTTP",
+                    "Backend Project"
+                ]
+            },
+
+            {
+                name: "Rust",
+                short: "RS",
+                category: "Systems",
+                level: "Advanced",
+                description: "Rust tập trung vào hiệu năng và an toàn bộ nhớ, phù hợp với systems programming và software yêu cầu kiểm soát tài nguyên.",
+                audience: [
+                    "Systems Programmer",
+                    "Advanced Developer",
+                    "Người thích low-level",
+                    "Người quan tâm memory safety"
+                ],
+                uses: [
+                    "Systems",
+                    "CLI",
+                    "Backend",
+                    "High Performance"
+                ],
+                difficulty: 9,
+                projects: [
+                    "CLI Tool",
+                    "Web Server",
+                    "Game Prototype",
+                    "Systems Tool"
+                ],
+                tools: [
+                    "VS Code",
+                    "Rustup",
+                    "Cargo",
+                    "Git"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "Ownership",
+                    "Borrowing",
+                    "Struct",
+                    "Trait",
+                    "Async",
+                    "Systems Project"
+                ]
+            },
+
+            {
+                name: "Kotlin",
+                short: "KT",
+                category: "Mobile",
+                level: "Intermediate",
+                description: "Kotlin là lựa chọn phổ biến trong phát triển Android hiện đại và có cú pháp tương đối gọn.",
+                audience: [
+                    "Android Developer",
+                    "Mobile Developer",
+                    "Java Developer",
+                    "Người làm ứng dụng"
+                ],
+                uses: [
+                    "Android",
+                    "Mobile Apps",
+                    "Backend",
+                    "Multiplatform"
+                ],
+                difficulty: 6,
+                projects: [
+                    "Android To-do",
+                    "Weather App",
+                    "Notes App",
+                    "Expense Tracker"
+                ],
+                tools: [
+                    "Android Studio",
+                    "Kotlin",
+                    "Gradle",
+                    "Git"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "Null Safety",
+                    "OOP",
+                    "Collections",
+                    "Coroutines",
+                    "Android",
+                    "App Project"
+                ]
+            },
+
+            {
+                name: "Swift",
+                short: "SW",
+                category: "Mobile",
+                level: "Intermediate",
+                description: "Swift được Apple phát triển để xây dựng ứng dụng cho iPhone, iPad, Mac và các nền tảng Apple.",
+                audience: [
+                    "iOS Developer",
+                    "Mac Developer",
+                    "Mobile Developer",
+                    "Người muốn làm app Apple"
+                ],
+                uses: [
+                    "iOS",
+                    "iPadOS",
+                    "macOS",
+                    "Apple Platforms"
+                ],
+                difficulty: 6,
+                projects: [
+                    "Notes App",
+                    "Weather App",
+                    "Habit Tracker",
+                    "Simple iOS Game"
+                ],
+                tools: [
+                    "Xcode",
+                    "Swift",
+                    "SwiftUI",
+                    "Git"
+                ],
+                roadmap: [
+                    "Syntax",
+                    "Optionals",
+                    "Struct",
+                    "Protocol",
+                    "Async",
+                    "SwiftUI",
+                    "App Project"
+                ]
+            }
+        ];
+
+        const projectData = {
+            calculator: {
+                title: "Calculator",
+                level: "BEGINNER",
+                estimatedTime: "Khoảng 1–2 tuần",
+                description: "Project cơ bản để làm quen với biến, toán tử, điều kiện và function.",
+                languages: ["Python", "JavaScript"],
+                knowledge: ["Biến", "Toán tử", "if / else", "Function"],
+                sampleCode: `function calculate(a, b, operator) {
+    if (operator === "+") return a + b;
+    if (operator === "-") return a - b;
+    if (operator === "*") return a * b;
+    if (operator === "/") return b === 0 ? "Không thể chia cho 0" : a / b;
+
+    return "Phép tính không hợp lệ";
+}
+
+console.log(calculate(10, 5, "+"));`,
+                guideText: "MDN — JavaScript Functions",
+                guideUrl: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+                steps: [
+                    {
+                        title: "Tạo input",
+                        description: "Cho người dùng nhập hai số và chọn phép tính."
+                    },
+                    {
+                        title: "Lấy dữ liệu",
+                        description: "Đọc dữ liệu từ input và chuyển thành kiểu số."
+                    },
+                    {
+                        title: "Tạo function",
+                        description: "Viết function riêng cho cộng, trừ, nhân và chia."
+                    },
+                    {
+                        title: "Hiển thị kết quả",
+                        description: "Đưa kết quả trở lại giao diện hoặc terminal."
+                    }
+                ]
+            },
+
+            todo: {
+                title: "To-do App",
+                level: "BEGINNER",
+                estimatedTime: "Khoảng 1–2 tuần",
+                description: "Project frontend để học DOM, event, array và lưu dữ liệu.",
+                languages: ["HTML", "CSS", "JavaScript"],
+                knowledge: ["DOM", "Event", "Array", "LocalStorage"],
+                sampleCode: `const tasks = [
+    "Học JavaScript",
+    "Làm To-do App"
+];
+
+function addTask(task) {
+    tasks.push(task);
+    console.log(tasks);
+}
+
+addTask("Đẩy project lên GitHub");`,
+                guideText: "MDN — Working with the DOM",
+                guideUrl: "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction",
+                steps: [
+                    {
+                        title: "Tạo form thêm task",
+                        description: "Tạo input và nút để người dùng nhập công việc."
+                    },
+                    {
+                        title: "Hiển thị task",
+                        description: "Dùng JavaScript tạo phần tử mới trong danh sách."
+                    },
+                    {
+                        title: "Đánh dấu hoàn thành",
+                        description: "Thêm trạng thái completed khi người dùng click."
+                    },
+                    {
+                        title: "Lưu dữ liệu",
+                        description: "Dùng localStorage để dữ liệu vẫn còn sau khi reload."
+                    }
+                ]
+            },
+
+            weather: {
+                title: "Weather App",
+                level: "INTERMEDIATE",
+                estimatedTime: "Khoảng 2–3 tuần",
+                description: "Project giúp học cách gọi API, xử lý JSON và cập nhật giao diện.",
+                languages: ["HTML", "CSS", "JavaScript"],
+                knowledge: ["Fetch API", "JSON", "Async / Await", "DOM"],
+                sampleCode: `async function getWeather(city) {
+    const response = await fetch(
+        "https://api.example.com/weather?city=" + encodeURIComponent(city)
+    );
+
+    const data = await response.json();
+    console.log(data);
+}
+
+getWeather("Ho Chi Minh City");`,
+                guideText: "MDN — Fetch API",
+                guideUrl: "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+                steps: [
+                    {
+                        title: "Tạo ô tìm kiếm",
+                        description: "Cho người dùng nhập tên thành phố."
+                    },
+                    {
+                        title: "Gọi API",
+                        description: "Gửi request tới dịch vụ thời tiết."
+                    },
+                    {
+                        title: "Xử lý JSON",
+                        description: "Lấy nhiệt độ, độ ẩm và trạng thái thời tiết."
+                    },
+                    {
+                        title: "Render dữ liệu",
+                        description: "Cập nhật thông tin thời tiết lên giao diện."
+                    }
+                ]
+            },
+
+            api: {
+                title: "REST API",
+                level: "INTERMEDIATE",
+                estimatedTime: "Khoảng 3–4 tuần",
+                description: "Project backend để học HTTP request, route và cách server trả dữ liệu.",
+                languages: ["Go", "Java", "JavaScript"],
+                knowledge: ["HTTP", "JSON", "REST", "Routing"],
+                sampleCode: `const http = require("http");
+
+const server = http.createServer((req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ message: "Hello API" }));
+});
+
+server.listen(3000);`,
+                guideText: "MDN — HTTP overview",
+                guideUrl: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+                steps: [
+                    {
+                        title: "Tạo server",
+                        description: "Khởi tạo backend và cổng server."
+                    },
+                    {
+                        title: "Tạo route",
+                        description: "Tạo endpoint GET, POST, PUT và DELETE."
+                    },
+                    {
+                        title: "Xử lý request",
+                        description: "Nhận dữ liệu và xử lý logic phía server."
+                    },
+                    {
+                        title: "Trả response",
+                        description: "Trả dữ liệu JSON về cho client."
+                    }
+                ]
+            },
+
+            engine: {
+                title: "Mini Game Engine",
+                level: "ADVANCED",
+                estimatedTime: "Khoảng 2–3 tháng",
+                description: "Project nâng cao để tìm hiểu game loop, input, rendering và kiến trúc engine.",
+                languages: ["C++"],
+                knowledge: ["OOP", "Memory", "Rendering", "Game Loop"],
+                sampleCode: `class GameObject {
+public:
+    void update() {
+        // Update object state
+    }
+};
+
+int main() {
+    GameObject player;
+    player.update();
+}`,
+                guideText: "LearnCpp — Classes and Objects",
+                guideUrl: "https://www.learncpp.com/cpp-tutorial/classes-and-class-members/",
+                steps: [
+                    {
+                        title: "Tạo game loop",
+                        description: "Xây dựng vòng lặp chính để cập nhật game."
+                    },
+                    {
+                        title: "Xử lý input",
+                        description: "Đọc keyboard hoặc controller input."
+                    },
+                    {
+                        title: "Quản lý object",
+                        description: "Tạo hệ thống entity hoặc object cho game."
+                    },
+                    {
+                        title: "Thêm rendering",
+                        description: "Hiển thị object và cập nhật theo từng frame."
+                    }
+                ]
+            },
+
+            cli: {
+                title: "CLI Tool",
+                level: "ADVANCED",
+                estimatedTime: "Khoảng 2–4 tuần",
+                description: "Project tạo ứng dụng chạy trong terminal để học arguments, file system và error handling.",
+                languages: ["Rust", "Go"],
+                knowledge: ["Arguments", "File System", "Error Handling", "Modules"],
+                sampleCode: `use std::env;
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    for arg in args.iter().skip(1) {
+        println!("Argument: {}", arg);
+    }
+}`,
+                guideText: "The Rust Book — Command Line Arguments",
+                guideUrl: "https://doc.rust-lang.org/book/ch12-01-accepting-command-line-arguments.html",
+                steps: [
+                    {
+                        title: "Nhận command",
+                        description: "Đọc command và arguments từ terminal."
+                    },
+                    {
+                        title: "Xử lý command",
+                        description: "Thực hiện logic tương ứng với command."
+                    },
+                    {
+                        title: "Làm việc với file",
+                        description: "Đọc hoặc ghi dữ liệu vào file."
+                    },
+                    {
+                        title: "Xử lý lỗi",
+                        description: "Hiển thị thông báo rõ ràng khi command không hợp lệ."
+                    }
+                ]
+            }
+        };
+
+        const favoriteKey = "codepath-favorites";
+        let favorites = JSON.parse(localStorage.getItem(favoriteKey) || "[]");
+
+        const pathData = {
+            web: { title: "Web Development", type: "Lộ trình", time: "Khoảng 3 tháng" },
+            ai: { title: "AI / Data", type: "Lộ trình", time: "Khoảng 6 tháng" },
+            game: { title: "Game Development", type: "Lộ trình", time: "Khoảng 4–6 tháng" },
+            backend: { title: "Backend", type: "Lộ trình", time: "Khoảng 3–4 tháng" },
+            android: { title: "Android", type: "Lộ trình", time: "Khoảng 4 tháng" },
+            systems: { title: "Systems", type: "Lộ trình", time: "Khoảng 6–9 tháng" }
+        };
+
+        function saveFavorites() {
+            localStorage.setItem(favoriteKey, JSON.stringify(favorites));
+        }
+
+        function isFavorite(type, id) {
+            return favorites.some(item => item.type === type && item.id === id);
+        }
+
+        function toggleFavorite(type, id, button) {
+            const index = favorites.findIndex(item => item.type === type && item.id === id);
+
+            if (index >= 0) {
+                favorites.splice(index, 1);
+                showToast("Đã bỏ khỏi mục yêu thích.");
+            } else {
+                favorites.push({ type, id });
+                showToast("Đã lưu vào mục yêu thích.");
+            }
+
+            saveFavorites();
+            updateFavoriteButtons();
+            renderFavorites();
+        }
+
+        function updateFavoriteButtons() {
+            document.querySelectorAll(".favorite-btn").forEach(button => {
+                const type = button.dataset.favoriteType;
+                const id = button.dataset.favoriteId;
+                const active = isFavorite(type, id);
+
+                button.classList.toggle("active", active);
+                button.textContent = active ? "♥" : "♡";
+            });
+        }
+
+        function renderFavorites() {
+            const container = document.querySelector("#savedItems");
+            const count = document.querySelector("#savedCount");
+
+            count.textContent = `${favorites.length} mục đã lưu`;
+
+            if (!favorites.length) {
+                container.innerHTML = `
+                    <div class="saved-empty">
+                        Chưa có mục nào được lưu. Bấm ♡ ở Project hoặc Lộ trình để thêm vào đây.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="saved-grid">
+                    ${favorites.map(item => {
+                const data = item.type === "project" ? projectData[item.id] : pathData[item.id];
+                if (!data) return "";
+
+                return `
+                            <div class="saved-item">
+                                <div>
+                                    <strong>${data.title}</strong>
+                                    <small>${item.type === "project" ? "Project Idea" : "Lộ trình"} · ${item.type === "project" ? data.estimatedTime : data.time}</small>
+                                </div>
+
+                                <div class="saved-actions">
+                                    <button class="favorite-btn active" data-favorite-type="${item.type}" data-favorite-id="${item.id}" aria-label="Bỏ lưu">♥</button>
+                                    ${item.type === "project"
+                        ? `<button class="saved-link" data-open-project="${item.id}">Mở</button>`
+                        : `<a class="saved-link" href="#learning">Xem</a>`}
+                                </div>
+                            </div>
+                        `;
+            }).join("")}
+                </div>
+            `;
+        }
+
+        const cards = document.querySelector("#cards");
+        const searchInput = document.querySelector("#searchInput");
+        const categorySelect = document.querySelector("#categorySelect");
+        const levelSelect = document.querySelector("#levelSelect");
+        const emptyState = document.querySelector("#emptyState");
+
+        const languageModal = document.querySelector("#languageModal");
+        const projectModal = document.querySelector("#projectModal");
+        const recommendModal = document.querySelector("#recommendModal");
+        const compareModal = document.querySelector("#compareModal");
+        const adminModal = document.querySelector("#adminModal");
+
+        const recommendation = {
+            level: null,
+            goal: null
+        };
+
+        const ADMIN_EMAIL = "kyulon123@gmail.com";
+
+        // Render languages
+
+        function renderLanguages() {
+            const query = searchInput.value.trim().toLowerCase();
+            const category = categorySelect.value;
+            const level = levelSelect.value;
+
+            const filtered = languages.filter(language => {
+                const matchesQuery =
+                    !query ||
+                    language.name.toLowerCase().includes(query) ||
+                    language.category.toLowerCase().includes(query) ||
+                    language.level.toLowerCase().includes(query) ||
+                    language.description.toLowerCase().includes(query) ||
+                    language.uses.some(use => use.toLowerCase().includes(query)) ||
+                    language.projects.some(project => project.toLowerCase().includes(query));
+
+                const matchesCategory =
+                    category === "all" || language.category === category;
+
+                const matchesLevel =
+                    level === "all" || language.level === level;
+
+                return matchesQuery && matchesCategory && matchesLevel;
+            });
+
+            cards.innerHTML = filtered.map(language => `
+                <article class="game-card" onclick="openLanguage(${languages.indexOf(language)})">
+                    <div class="card-art">
+                        <div class="code-logo ${language.short.length > 3 ? "small" : ""}">
+                            ${language.short}
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="badge-row">
+                            <span class="badge">${language.category}</span>
+                            <span class="badge level">${language.level}</span>
+                        </div>
+
+                        <h3>${language.name}</h3>
+                        <p>${language.description}</p>
+
+                        <div class="card-meta">
+                            <span>Độ khó ${language.difficulty}/10</span>
+                            <span class="view-more">Xem →</span>
+                        </div>
+                    </div>
+                </article>
+            `).join("");
+
+            emptyState.style.display = filtered.length ? "none" : "block";
+
+        }
+
+        // Language modal
+
+        function openLanguage(index) {
+            const language = languages[index];
+
+            document.querySelector("#modalLogo").textContent = language.short;
+            document.querySelector("#modalCategory").textContent = language.category;
+            document.querySelector("#modalTitle").textContent = language.name;
+            document.querySelector("#modalDescription").textContent = language.description;
+
+            document.querySelector("#modalAudience").innerHTML =
+                language.audience.map(item => `<div>${item}</div>`).join("");
+
+            document.querySelector("#modalUses").innerHTML =
+                language.uses.map(item => `<div>${item}</div>`).join("");
+
+            document.querySelector("#modalProjects").innerHTML =
+                language.projects.map(item => `<div>${item}</div>`).join("");
+
+            document.querySelector("#modalTools").innerHTML =
+                language.tools.map(item => `<div>${item}</div>`).join("");
+
+            document.querySelector("#modalLevel").innerHTML = `
+                <div>
+                    ${language.level === "Beginner"
+                    ? "Phù hợp cho người mới"
+                    : language.level === "Intermediate"
+                        ? "Cần nền tảng cơ bản"
+                        : "Nên có nền tảng lập trình"
+                }
+                </div>
+            `;
+
+            const difficulty = document.querySelector("#modalDifficulty");
+            difficulty.innerHTML = "";
+
+            for (let i = 1; i <= 10; i++) {
+                const bar = document.createElement("i");
+
+                if (i <= language.difficulty) {
+                    bar.classList.add("active");
+                }
+
+                difficulty.appendChild(bar);
+            }
+
+            document.querySelector("#modalRoadmap").innerHTML =
+                language.roadmap.map((step, index) => `
+                    <div class="roadmap-step">
+                        <div class="roadmap-number">
+                            ${String(index + 1).padStart(2, "0")}
+                        </div>
+
+                        <span>${step}</span>
+                    </div>
+                `).join("");
+
+            languageModal.classList.add("show");
+            document.body.classList.add("modal-open");
+        }
+
+        function closeLanguage() {
+            languageModal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+        }
+
+        // Project modal
+
+        function openProject(id) {
+            const project = projectData[id];
+
+            if (!project) return;
+
+            document.querySelector("#projectLevel").textContent = project.level;
+            document.querySelector("#projectTitle").textContent = project.title;
+            document.querySelector("#projectDescription").textContent = project.description;
+            document.querySelector("#projectTime").textContent = `◷ ${project.estimatedTime}`;
+
+            document.querySelector("#projectLanguages").innerHTML =
+                project.languages.map(item => `<div>${item}</div>`).join("");
+
+            document.querySelector("#projectKnowledge").innerHTML =
+                project.knowledge.map(item => `<div>${item}</div>`).join("");
+
+            document.querySelector("#projectSteps").innerHTML =
+                project.steps.map((step, index) => `
+                    <div class="project-step">
+                        <div class="project-step-number">
+                            ${String(index + 1).padStart(2, "0")}
+                        </div>
+
+                        <div class="project-step-content">
+                            <strong>${step.title}</strong>
+                            <span>${step.description}</span>
+                        </div>
+                    </div>
+                `).join("");
+
+            document.querySelector("#projectCode").textContent = project.sampleCode;
+            document.querySelector("#projectGuideText").textContent = project.guideText;
+            document.querySelector("#projectGuide").href = project.guideUrl;
+
+            projectModal.classList.add("show");
+            document.body.classList.add("modal-open");
+        }
+
+        function closeProject() {
+            projectModal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+        }
+
+        async function copyProjectCode() {
+            const code = document.querySelector("#projectCode").textContent;
+            const button = document.querySelector(".copy-code-btn");
+
+            try {
+                await navigator.clipboard.writeText(code);
+                const oldText = button.textContent;
+                button.textContent = "Đã copy";
+
+                setTimeout(() => {
+                    button.textContent = oldText;
+                }, 1200);
+            } catch {
+                alert("Không thể copy tự động. Hãy bôi đen code và copy thủ công.");
+            }
+        }
+
+        // Favorites
+
+        document.addEventListener("click", event => {
+            const favorite = event.target.closest(".favorite-btn");
+
+            if (favorite) {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleFavorite(favorite.dataset.favoriteType, favorite.dataset.favoriteId, favorite);
+                return;
+            }
+
+            const openProjectButton = event.target.closest("[data-open-project]");
+            if (openProjectButton) {
+                openProject(openProjectButton.dataset.openProject);
+            }
+        });
+
+        // Quick filters
+
+        document.querySelectorAll("[data-filter]").forEach(button => {
+            button.addEventListener("click", () => {
+                const level = button.dataset.filter;
+
+                levelSelect.value = level;
+
+                document.querySelectorAll("[data-filter]").forEach(item => {
+                    item.classList.remove("active");
+                });
+
+                button.classList.add("active");
+
+                renderLanguages();
+
+                document.querySelector("#languages").scrollIntoView({
+                    behavior: "smooth"
+                });
+            });
+        });
+
+        // Recommendation
+
+        document.querySelectorAll(".choice").forEach(button => {
+            button.addEventListener("click", () => {
+                const question = button.dataset.question;
+
+                document.querySelectorAll(
+                    `.choice[data-question="${question}"]`
+                ).forEach(item => {
+                    item.classList.remove("selected");
+                });
+
+                button.classList.add("selected");
+                recommendation[question] = button.dataset.value;
+            });
+        });
+
+        function openRecommendation() {
+            recommendModal.classList.add("show");
+            document.body.classList.add("modal-open");
+        }
+
+        function closeRecommendation() {
+            recommendModal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+        }
+
+        function getRecommendation() {
+            const { level, goal } = recommendation;
+            const resultBox = document.querySelector("#recommendResult");
+
+            if (!level || !goal) {
+                resultBox.classList.add("show");
+
+                resultBox.innerHTML = `
+                    <div class="result-main">
+                        Chọn đủ 2 câu hỏi nhé.
+                    </div>
+                `;
+
+                return;
+            }
+
+            let result = languages.find(item => item.name === "Python");
+
+            if (goal === "Web") {
+                result = level === "Beginner"
+                    ? languages.find(item => item.name === "HTML")
+                    : languages.find(item => item.name === "JavaScript");
+            }
+
+            if (goal === "AI") {
+                result = languages.find(item => item.name === "Python");
+            }
+
+            if (goal === "Game") {
+                result = level === "Advanced"
+                    ? languages.find(item => item.name === "C++")
+                    : languages.find(item => item.name === "C#");
+            }
+
+            if (goal === "Mobile") {
+                result = languages.find(item => item.name === "Kotlin");
+            }
+
+            if (goal === "Backend") {
+                result = level === "Advanced"
+                    ? languages.find(item => item.name === "Rust")
+                    : languages.find(item => item.name === "Go");
+            }
+
+            if (goal === "Systems") {
+                result = level === "Advanced"
+                    ? languages.find(item => item.name === "Rust")
+                    : languages.find(item => item.name === "C");
+            }
+
+            resultBox.classList.add("show");
+
+            resultBox.innerHTML = `
+                <div class="result-main">
+                    Gợi ý: <span>${result.name}</span>
+                </div>
+
+                <div class="result-reason">
+                    ${result.description}
+                </div>
+
+                <div class="result-projects">
+                    Project đầu tiên:
+                    <strong>${result.projects[0]}</strong>
+                </div>
+            `;
+        }
+
+        // Compare
+
+        function fillCompareSelects() {
+            const first = document.querySelector("#compareOne");
+            const second = document.querySelector("#compareTwo");
+
+            const options = languages.map(language => `
+                <option value="${language.name}">
+                    ${language.name}
+                </option>
+            `).join("");
+
+            first.innerHTML = options;
+            second.innerHTML = options;
+
+            first.value = "HTML";
+            second.value = "JavaScript";
+        }
+
+        function openCompare() {
+            compareModal.classList.add("show");
+            document.body.classList.add("modal-open");
+        }
+
+        function closeCompare() {
+            compareModal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+        }
+
+        function compareLanguages() {
+            const oneName = document.querySelector("#compareOne").value;
+            const twoName = document.querySelector("#compareTwo").value;
+
+            const one = languages.find(item => item.name === oneName);
+            const two = languages.find(item => item.name === twoName);
+
+            if (!one || !two) return;
+
+            document.querySelector("#compareResult").innerHTML = `
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>${one.name}</th>
+                            <th>${two.name}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Cấp độ</td>
+                            <td>${one.level}</td>
+                            <td>${two.level}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Lĩnh vực</td>
+                            <td>${one.category}</td>
+                            <td>${two.category}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Độ khó</td>
+                            <td>${one.difficulty}/10</td>
+                            <td>${two.difficulty}/10</td>
+                        </tr>
+
+                        <tr>
+                            <td>Project đầu tiên</td>
+                            <td>${one.projects[0]}</td>
+                            <td>${two.projects[0]}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Công cụ</td>
+                            <td>${one.tools.slice(0, 2).join(", ")}</td>
+                            <td>${two.tools.slice(0, 2).join(", ")}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Admin
+
+        function openAdmin() {
+            document.querySelector("#adminEmail").textContent = ADMIN_EMAIL;
+
+            adminModal.classList.add("show");
+            document.body.classList.add("modal-open");
+        }
+
+        function closeAdmin() {
+            adminModal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+        }
+
+        async function copyEmail() {
+            try {
+                await navigator.clipboard.writeText(ADMIN_EMAIL);
+
+                const button = document.querySelector(".copy-btn");
+                const oldText = button.textContent;
+                button.textContent = "Đã copy";
+                showToast("Đã sao chép email!");
+
+                setTimeout(() => {
+                    button.textContent = oldText;
+                }, 1500);
+            } catch {
+                showToast("Không thể sao chép tự động.");
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
+        }
+
+        // Search
+
+        searchInput.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                renderLanguages();
+
+                document.querySelector("#languages").scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+        });
+
+        categorySelect.addEventListener("change", renderLanguages);
+        levelSelect.addEventListener("change", renderLanguages);
+
+        // Progress
+
+        const progressItems = document.querySelectorAll("[data-progress]");
+        const progressFill = document.querySelector("#progressFill");
+        const progressText = document.querySelector("#progressText");
+
+        function updateProgress() {
+            let completed = 0;
+
+            progressItems.forEach(item => {
+                if (item.checked) {
+                    completed++;
+                    item.parentElement.classList.add("done");
+                } else {
+                    item.parentElement.classList.remove("done");
+                }
+            });
+
+            const percent = Math.round(
+                completed / progressItems.length * 100
+            );
+
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `${percent}% hoàn thành`;
+
+            localStorage.setItem(
+                "codepath-progress",
+                JSON.stringify([...progressItems].map(item => item.checked))
+            );
+        }
+
+        progressItems.forEach(item => {
+            item.addEventListener("change", updateProgress);
+        });
+
+        const savedProgress = JSON.parse(
+            localStorage.getItem("codepath-progress") || "null"
+        );
+
+        if (Array.isArray(savedProgress)) {
+            progressItems.forEach((item, index) => {
+                item.checked = Boolean(savedProgress[index]);
+            });
+        }
+
+        updateProgress();
+        window.addEventListener("beforeunload", updateProgress);
+
+        // Close modal by clicking outside
+
+        languageModal.addEventListener("click", event => {
+            if (event.target === languageModal) {
+                closeLanguage();
+            }
+        });
+
+        projectModal.addEventListener("click", event => {
+            if (event.target === projectModal) {
+                closeProject();
+            }
+        });
+
+        recommendModal.addEventListener("click", event => {
+            if (event.target === recommendModal) {
+                closeRecommendation();
+            }
+        });
+
+        compareModal.addEventListener("click", event => {
+            if (event.target === compareModal) {
+                closeCompare();
+            }
+        });
+
+        adminModal.addEventListener("click", event => {
+            if (event.target === adminModal) {
+                closeAdmin();
+            }
+        });
+
+        // ESC
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                closeLanguage();
+                closeProject();
+                closeRecommendation();
+                closeCompare();
+                closeAdmin();
+            }
+        });
+
+        fillCompareSelects();
+        renderLanguages();
+        renderFavorites();
+        updateFavoriteButtons();
+    </script>
+
+</body>
+
+</html>
